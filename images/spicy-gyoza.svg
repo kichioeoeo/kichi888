@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900">
+  <defs>
+    <radialGradient id="bg" cx=".5" cy=".45" r=".75"><stop offset="0" stop-color="#5a3a22"/><stop offset="1" stop-color="#2b1a10"/></radialGradient>
+    <radialGradient id="oil" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#e2361b"/><stop offset=".75" stop-color="#b3200f"/><stop offset="1" stop-color="#7d1408"/></radialGradient>
+    <linearGradient id="crust" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3d6"/><stop offset=".5" stop-color="#f1c27a"/><stop offset="1" stop-color="#b8661c"/></linearGradient>
+    <g id="g">
+      <path d="M-120 30c10-80 230-80 240 0z" fill="url(#crust)" stroke="#8a4a14" stroke-width="5"/>
+      <path d="M-120 30h240c-6 18-30 26-120 26s-114-8-120-26z" fill="#9b4e12"/>
+      <path d="M-85 -10q20 -18 40 -4M-40 -24q20 -14 40 0M5 -24q20 -12 40 4M50 -12q18 -6 32 12" fill="none" stroke="#c98a3e" stroke-width="5" stroke-linecap="round"/>
+    </g>
+    <g id="chili"><path d="M0 0c40 -6 80 10 100 40c-40 -10 -80 -14 -100 -40z" fill="#d7261b"/><path d="M0 0c-8 -8 -12 -16 -10 -24" stroke="#2f7d32" stroke-width="7" fill="none" stroke-linecap="round"/></g>
+  </defs>
+  <rect width="900" height="900" fill="url(#bg)"/>
+  <ellipse cx="450" cy="480" rx="370" ry="330" fill="#1d120b"/>
+  <ellipse cx="450" cy="470" rx="350" ry="310" fill="#f6efe4"/>
+  <ellipse cx="450" cy="475" rx="300" ry="260" fill="url(#oil)"/>
+  <g fill="#ff7a3a" opacity=".35"><circle cx="300" cy="380" r="18"/><circle cx="620" cy="560" r="24"/><circle cx="560" cy="330" r="12"/><circle cx="330" cy="600" r="14"/></g>
+  <use href="#g" transform="translate(330 360) rotate(-12)"/>
+  <use href="#g" transform="translate(570 380) rotate(10)"/>
+  <use href="#g" transform="translate(300 530) rotate(-4)"/>
+  <use href="#g" transform="translate(540 560) rotate(6)"/>
+  <use href="#g" transform="translate(440 460)"/>
+  <g fill="#fff5dc"><ellipse cx="380" cy="420" rx="5" ry="3"/><ellipse cx="470" cy="400" rx="5" ry="3"/><ellipse cx="520" cy="470" rx="5" ry="3"/><ellipse cx="400" cy="520" rx="5" ry="3"/><ellipse cx="610" cy="430" rx="5" ry="3"/><ellipse cx="350" cy="580" rx="5" ry="3"/><ellipse cx="500" cy="600" rx="5" ry="3"/></g>
+  <g fill="#4a2410"><circle cx="420" cy="590" r="7"/><circle cx="600" cy="510" r="7"/><circle cx="270" cy="470" r="7"/><circle cx="650" cy="620" r="7"/><circle cx="360" cy="300" r="7"/></g>
+  <g fill="#3f9b45"><circle cx="455" cy="430" r="6"/><circle cx="560" cy="430" r="5"/><circle cx="330" cy="470" r="6"/><circle cx="470" cy="560" r="5"/></g>
+  <use href="#chili" transform="translate(140 170) rotate(20)"/>
+  <use href="#chili" transform="translate(700 760) rotate(200)"/>
+  <use href="#chili" transform="translate(720 150) rotate(120) scale(.8)"/>
+</svg>

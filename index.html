@@ -4,8 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#3d2616">
-<title>金煎堂 鍋貼專賣｜金黃酥脆，傳承手藝的極致美味</title>
-<meta name="description" content="金煎堂鍋貼專賣：台灣在地豬肉、每日現包、現點現煎。線上點餐、冷凍禮盒、門市據點一次看。">
+<link rel="icon" type="image/svg+xml" href="images/logo.svg">
+<title>餃浸腦汁鍋貼店｜金黃酥脆，傳承手藝的極致美味</title>
+<meta name="description" content="餃浸腦汁鍋貼店：台灣在地豬肉、每日現包、現點現煎。線上點餐、冷凍禮盒、門市據點一次看。">
 
 <!-- 啟用 JS 標記（讓 reveal 動畫僅在有 JS 時生效） -->
 <script>document.documentElement.classList.add('js');</script>
@@ -118,6 +119,10 @@
   /* 地圖圖層 */
   #mapLayer { transition: transform .7s cubic-bezier(.22,.8,.3,1); transform-box: view-box; transform-origin: 300px 190px; }
 
+  /* LOGO 字標：粗斜體＋綠色標籤（發想自原始 LOGO） */
+  .logo-word { font-family: "Noto Sans TC", sans-serif; font-style: italic; transform: skewX(-8deg); letter-spacing: .04em; display: inline-block; }
+  .logo-tag { background: #16873a; color: #fff; padding: 0 .45em; border-radius: 3px; transform: skewX(-12deg); display: inline-block; letter-spacing: .15em; }
+
   /* 右下角預約浮動按鈕 */
   @keyframes fabRing { 0% { transform: scale(1); opacity: .55; } 100% { transform: scale(1.6); opacity: 0; } }
   .fab-ring { animation: fabRing 2.2s ease-out infinite; }
@@ -139,13 +144,11 @@
 <header id="siteHeader" class="hdr fixed inset-x-0 top-0 z-40">
   <div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:h-20 lg:px-8">
     <!-- Logo -->
-    <a href="#top" class="flex items-center gap-2.5" aria-label="金煎堂 回到頁面頂端">
-      <span class="grid h-10 w-10 place-items-center rounded-full bg-ember-600 text-white shadow-md">
-        <svg viewBox="0 0 32 32" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20c0-7 5-12 12-12s12 5 12 12z"/><path d="M9 20v3M16 20v4M23 20v3"/><path d="M10 14c2-2 4-3 6-3"/></svg>
-      </span>
+    <a href="#top" class="flex items-center gap-2.5" aria-label="餃浸腦汁鍋貼店 回到頁面頂端">
+      <img src="images/logo.svg" alt="" class="h-11 w-11 rounded-xl shadow-md" width="44" height="44">
       <span class="leading-tight">
-        <span class="block font-serif text-xl font-black tracking-wide">金煎堂</span>
-        <span class="hidden text-[10px] font-medium uppercase tracking-[0.3em] opacity-70 sm:block">Golden Sear · 鍋貼專賣</span>
+        <span class="logo-word block text-xl font-black">餃浸腦汁</span>
+        <span class="hidden text-[10px] font-bold tracking-[0.3em] opacity-80 sm:block"><span class="logo-tag">鍋貼店</span> · JIAO JIN NAO ZHI</span>
       </span>
     </a>
 
@@ -193,7 +196,7 @@
   <!-- 海報背景：模糊放大版填滿四周，避免留白 -->
   <img src="https://i.postimg.cc/j2YmMLV1/Chat-GPT-Image-2026nian8yue9ri-xia-wu06-20-57.png" alt="" aria-hidden="true" class="absolute inset-0 -z-30 h-full w-full scale-110 object-cover opacity-60 blur-2xl" onerror="this.onerror=null;this.src=FALLBACK">
   <!-- 海報本體：完整顯示不裁切（桌機靠右，避開左側標題） -->
-  <img src="https://i.postimg.cc/j2YmMLV1/Chat-GPT-Image-2026nian8yue9ri-xia-wu06-20-57.png" alt="金煎堂 主視覺海報" class="absolute inset-0 -z-20 hidden h-full w-full object-contain object-right pt-20 lg:block" onerror="this.onerror=null;this.src=FALLBACK">
+  <img src="https://i.postimg.cc/j2YmMLV1/Chat-GPT-Image-2026nian8yue9ri-xia-wu06-20-57.png" alt="餃浸腦汁鍋貼店 主視覺海報" class="absolute inset-0 -z-20 hidden h-full w-full object-contain object-right pt-20 lg:block" onerror="this.onerror=null;this.src=FALLBACK">
   <!-- 減淡遮罩：只在左側文字區加深，海報主體保持清晰 -->
   <div class="absolute inset-0 -z-10 bg-wood-900/60 lg:bg-transparent lg:bg-gradient-to-r lg:from-wood-900/80 lg:via-transparent lg:to-transparent"></div>
 
@@ -222,7 +225,7 @@
         <li class="flex items-center gap-2"><i data-lucide="store" class="h-4 w-4 text-ember-400"></i> 雙北 3 間門市</li>
       </ul>
       <!-- 手機／平板：海報完整顯示於文字下方 -->
-      <img src="https://i.postimg.cc/j2YmMLV1/Chat-GPT-Image-2026nian8yue9ri-xia-wu06-20-57.png" alt="金煎堂 主視覺海報" class="fade-up mt-10 w-full rounded-2xl shadow-2xl lg:hidden" style="animation-delay:.5s" onerror="this.onerror=null;this.src=FALLBACK">
+      <img src="https://i.postimg.cc/j2YmMLV1/Chat-GPT-Image-2026nian8yue9ri-xia-wu06-20-57.png" alt="餃浸腦汁鍋貼店 主視覺海報" class="fade-up mt-10 w-full rounded-2xl shadow-2xl lg:hidden" style="animation-delay:.5s" onerror="this.onerror=null;this.src=FALLBACK">
     </div>
   </div>
   <a href="#story" class="absolute bottom-6 left-1/2 hidden -translate-x-1/2 text-cream-50/70 transition hover:text-cream-50 sm:block" aria-label="向下捲動">
@@ -245,7 +248,7 @@
       <p class="eyebrow">品牌故事 · Our Story</p>
       <h2 class="section-title">一口酥脆，<br>三十年不變的堅持</h2>
       <p class="mt-6 leading-8 text-wood-700">
-        金煎堂從一個小小的夜市攤車起家。創辦人堅持「好鍋貼不需要花俏」：肉要新鮮、皮要現擀、火候要對。三十年來，我們把這份簡單做到極致，也把這份溫度帶進每一間門市。
+        餃浸腦汁從一個小小的夜市攤車起家。創辦人堅持「好鍋貼不需要花俏」：肉要新鮮、皮要現擀、火候要對。三十年來，我們把這份簡單做到極致，也把這份溫度帶進每一間門市。
       </p>
       <ul class="mt-8 space-y-5">
         <li class="flex gap-4">
@@ -403,7 +406,7 @@
           <div class="absolute left-3 right-3 top-3 flex items-center gap-2 rounded-2xl bg-white/95 p-2 pl-4 shadow-lg backdrop-blur sm:right-auto sm:w-80">
             <i data-lucide="search" class="h-4 w-4 shrink-0 text-wood-700/60"></i>
             <div class="min-w-0 flex-1">
-              <p id="mapTitle" class="truncate text-sm font-bold text-wood-800">金煎堂</p>
+              <p id="mapTitle" class="truncate text-sm font-bold text-wood-800">餃浸腦汁</p>
               <p id="mapAddr" class="truncate text-xs text-wood-700/70"></p>
             </div>
             <a id="mapDirections" href="#" target="_blank" rel="noopener noreferrer" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-ember-600 text-white transition hover:bg-ember-700" aria-label="在 Google 地圖開啟路線">
@@ -429,10 +432,8 @@
   <div class="mx-auto grid max-w-7xl gap-12 px-4 py-16 sm:px-6 md:grid-cols-2 lg:grid-cols-12 lg:px-8">
     <div class="lg:col-span-4">
       <a href="#top" class="flex items-center gap-2.5 text-cream-50">
-        <span class="grid h-10 w-10 place-items-center rounded-full bg-ember-600 text-white">
-          <svg viewBox="0 0 32 32" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20c0-7 5-12 12-12s12 5 12 12z"/><path d="M9 20v3M16 20v4M23 20v3"/><path d="M10 14c2-2 4-3 6-3"/></svg>
-        </span>
-        <span class="font-serif text-2xl font-black">金煎堂</span>
+        <img src="images/logo.svg" alt="" class="h-11 w-11 rounded-xl" width="44" height="44">
+        <span class="leading-tight"><span class="logo-word block text-2xl font-black">餃浸腦汁</span><span class="logo-tag mt-1 inline-block text-xs font-bold">鍋貼店</span></span>
       </a>
       <p class="mt-5 max-w-xs text-sm leading-relaxed text-cream-200/80">金黃酥脆，傳承手藝的極致美味。每日現包、現點現煎，三十年如一日。</p>
       <div class="mt-6 flex gap-3">
@@ -486,7 +487,7 @@
 
   <div class="border-t border-cream-50/10">
     <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-6 text-xs text-cream-200/70 sm:flex-row sm:px-6 lg:px-8">
-      <p>© <span id="year">2026</span> 金煎堂鍋貼專賣 Golden Sear. All rights reserved.</p>
+      <p>© <span id="year">2026</span> 餃浸腦汁鍋貼店. All rights reserved.</p>
       <div class="flex items-center gap-5">
         <button type="button" data-action="open-privacy" class="underline-offset-4 transition hover:text-ember-400 hover:underline">隱私權政策</button>
         <a href="#top" class="flex items-center gap-1 transition hover:text-ember-400">回到頂端 <i data-lucide="arrow-up" class="h-3.5 w-3.5"></i></a>
@@ -677,14 +678,14 @@
   const fmt = n => 'NT$ ' + Number(n).toLocaleString('en-US');
   const refreshIcons = () => { if (window.lucide) window.lucide.createIcons(); };
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const US = (id, w = 900) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
+  const US = (id, w = 900) => id.includes('/') ? id : `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
 
   /* ==========================================================
    * 商品資料
    * ========================================================== */
   const IMG = {
     gyoza1: '1563245372-f21724e3856d', gyoza2: '1496116218417-1a781b1c416c',
-    gyoza3: '1534422298391-e4f8c172dddb', gyoza4: '1541696490-8744a5dc0228',
+    gyoza3: '1534422298391-e4f8c172dddb', spicy: 'images/spicy-gyoza.svg',
     gyoza5: '1625220194771-7ebdea0b70b9', soup: '1547592180-85f173990554',
     drink: '1556679343-c7306c1976bc', salad: '1512621776951-a57141f2eefd',
     plate: '1504674900247-0877df9cc836', gift: '1549465220-1a8b9238cd48',
@@ -703,14 +704,14 @@
     { id: 'p1', cat: 'signature', name: '招牌豬肉鍋貼', unit: '10 入', price: 85, tags: ['人氣', '爆汁'], spice: 0, img: IMG.gyoza1, desc: '溫體豬後腿肉搭配高麗菜，咬開湯汁滿溢，底部金黃薄脆。' },
     { id: 'p2', cat: 'signature', name: '高麗菜鮮肉鍋貼', unit: '10 入', price: 80, tags: [], spice: 0, img: IMG.gyoza2, desc: '高麗菜清甜解膩，口感清爽，大人小孩都愛。' },
     { id: 'p3', cat: 'signature', name: '韭菜豬肉鍋貼', unit: '10 入', price: 85, tags: ['人氣'], spice: 0, img: IMG.gyoza3, desc: '現切在地韭菜，香氣濃郁，經典台式口味。' },
-    { id: 'p4', cat: 'signature', name: '川味麻辣鍋貼', unit: '10 入', price: 95, tags: ['辣味'], spice: 2, img: IMG.gyoza4, desc: '花椒與辣油調味的內餡，麻香帶勁，愛吃辣必點。' },
+    { id: 'p4', cat: 'signature', name: '川味麻辣鍋貼', unit: '10 入', price: 95, tags: ['辣味'], spice: 2, img: IMG.spicy, desc: '花椒與辣油調味的內餡，麻香帶勁，愛吃辣必點。' },
     { id: 'p5', cat: 'signature', name: '起司玉米鍋貼', unit: '10 入', price: 95, tags: ['爆汁'], spice: 0, img: IMG.gyoza5, desc: '濃郁起司搭配甜玉米，拉絲爆漿，小朋友最愛。' },
     { id: 'p6', cat: 'signature', name: '鮮蝦鍋貼', unit: '10 入', price: 120, tags: ['爆汁'], spice: 0, img: IMG.gyoza1, desc: '手剁蝦仁彈牙鮮甜，搭配豬肉的油香，層次豐富。' },
 
     { id: 'p7', cat: 'dumpling', name: '招牌鮮肉水餃', unit: '12 入', price: 90, tags: ['人氣'], spice: 0, img: IMG.gyoza3, desc: '薄皮大餡，水煮後依然 Q 彈，肉汁鮮甜。' },
     { id: 'p8', cat: 'dumpling', name: '韭黃鮮蝦水餃', unit: '12 入', price: 130, tags: ['爆汁'], spice: 0, img: IMG.gyoza2, desc: '韭黃香氣襯托蝦仁鮮味，清爽不油膩。' },
     { id: 'p9', cat: 'dumpling', name: '白菜豬肉水餃', unit: '12 入', price: 85, tags: [], spice: 0, img: IMG.gyoza5, desc: '大白菜甜味釋出，餡料多汁，家常好味道。' },
-    { id: 'p10', cat: 'dumpling', name: '香菇素食水餃', unit: '12 入', price: 85, tags: ['素食'], spice: 0, img: IMG.gyoza4, desc: '乾香菇、豆干與高麗菜，蛋奶素可食。' },
+    { id: 'p10', cat: 'dumpling', name: '香菇素食水餃', unit: '12 入', price: 85, tags: ['素食'], spice: 0, img: IMG.gyoza3, desc: '乾香菇、豆干與高麗菜，蛋奶素可食。' },
 
     { id: 'p11', cat: 'drink', name: '酸辣湯', unit: '1 碗', price: 45, tags: ['辣味', '人氣'], spice: 1, img: IMG.soup, desc: '酸中帶辣、料多味濃，與鍋貼是黃金組合。' },
     { id: 'p12', cat: 'drink', name: '玉米濃湯', unit: '1 碗', price: 40, tags: [], spice: 0, img: IMG.soup, desc: '香甜玉米熬煮，口感綿密，暖胃又滿足。' },
@@ -757,7 +758,7 @@
     { g: '點餐', q: '可以預約取餐時間嗎？', a: '可以。結帳時在「取餐時間」選擇今日可預約的時段，或選「盡快」，我們會依訂單順序現煎，約 20–30 分鐘完成。' },
     { g: '保存方式', q: '冷凍鍋貼要怎麼保存？', a: '收到後請立即放入 -18°C 以下冷凍庫，未開封可保存 3 個月。開封後請密封並於 7 天內食用完畢，避免反覆解凍。' },
     { g: '保存方式', q: '冷凍鍋貼怎麼煎才好吃？', a: '不需解凍！平底鍋倒少許油，排入鍋貼，加入 100ml 水蓋鍋中火煎約 6 分鐘，開蓋收乾水分後再煎 2 分鐘，即可享用金黃酥脆。' },
-    { g: '外送', q: '有哪些外送方式與範圍？', a: '各門市周邊 3 公里內提供自家宅配，也可在 Uber Eats、foodpanda 平台搜尋「金煎堂」。冷凍禮盒以低溫冷鏈宅配全台（離島除外）。' },
+    { g: '外送', q: '有哪些外送方式與範圍？', a: '各門市周邊 3 公里內提供自家宅配，也可在 Uber Eats、foodpanda 平台搜尋「餃浸腦汁」。冷凍禮盒以低溫冷鏈宅配全台（離島除外）。' },
     { g: '外送', q: '運費如何計算？', a: '宅配訂單滿 NT$ 800 免運，未滿則酌收運費 NT$ 80。內用與外帶不收運費。' }
   ];
 
@@ -1112,9 +1113,9 @@
   function applyMap(store) {
     $('#mapLayer').style.transform = `translate(${store.off.x}px, ${store.off.y}px) scale(${state.mapZoom})`;
     ['mapL1', 'mapL2', 'mapL3'].forEach((id, i) => { const el = document.getElementById(id); if (el) el.textContent = store.streets[i]; });
-    $('#mapTitle').textContent = '金煎堂 ' + store.name;
+    $('#mapTitle').textContent = '餃浸腦汁 ' + store.name;
     $('#mapAddr').textContent = store.addr;
-    $('#mapDirections').href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('金煎堂 ' + store.addr);
+    $('#mapDirections').href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('餃浸腦汁 ' + store.addr);
   }
 
   function renderStores() {
@@ -1129,7 +1130,7 @@
     const open = isOpen(cur);
     $('#storeDetail').innerHTML = `<div class="fade-up">
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <h3 class="font-serif text-2xl font-black">金煎堂 ${cur.name}</h3>
+        <h3 class="font-serif text-2xl font-black">餃浸腦汁 ${cur.name}</h3>
         <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${open ? 'bg-green-100 text-green-800' : 'bg-wood-900/10 text-wood-700'}"><span class="h-1.5 w-1.5 rounded-full ${open ? 'bg-green-600' : 'bg-wood-700/60'}"></span>${open ? '營業中' : '休息中'}</span>
       </div>
       <p class="mt-2 text-sm text-wood-700">${cur.desc}</p>
@@ -1147,7 +1148,7 @@
         </div>
       </div>
       <div class="mt-6 flex flex-wrap gap-3">
-        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('金煎堂 ' + cur.addr)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary"><i data-lucide="navigation" class="h-4 w-4"></i>路線規劃</a>
+        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('餃浸腦汁 ' + cur.addr)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary"><i data-lucide="navigation" class="h-4 w-4"></i>路線規劃</a>
         <a href="tel:${cur.tel}" class="btn btn-dark-outline"><i data-lucide="phone" class="h-4 w-4"></i>撥打電話</a>
       </div></div>`;
     applyMap(cur);
