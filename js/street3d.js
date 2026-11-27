@@ -15,7 +15,6 @@ function hasWebGL() {
 }
 
 async function init() {
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isSmall = () => stage.clientWidth < 640;
 
   /* ---------- 基本場景 ---------- */
@@ -158,7 +157,8 @@ async function init() {
 
   function spawn(w, initial) {
     const fromShop = !initial && Math.random() < 0.3;     // 從店裡提著外帶走出來
-    w.speed = 0.55 + Math.random() * 0.3;                  // 每秒移動距離（約 45–70 秒走完全程）
+    w.speed = 0.7 + Math.random() * 0.3;
+    w.phase = Math.random() * Math.PI * 2;                  // 每秒移動距離（約 45–70 秒走完全程）
     w.lane = 2.4 + Math.random() * 2.1;
     w.dir = Math.random() < 0.5 ? 1 : -1;
     w.enter = !fromShop && Math.random() < 0.35;           // 是否走進店裡
@@ -214,6 +214,11 @@ async function init() {
       w.opacity = Math.min(w.opacity + dt * 1.2, 1); setOpacity(w.mesh, w.opacity);
       if (Math.abs(p.z - w.lane) < 0.02) { w.state = 'walk'; w.enter = false; }
     }
+    // 走路動作：每 1 秒一步、幅度小，看起來自然不抖
+    w.phase += dt * Math.PI * 2 / 1.0;
+    const sw = Math.sin(w.phase), L = w.mesh.userData.limbs;
+    L.legL.rotation.x = sw * 0.35; L.legR.rotation.x = -sw * 0.35;
+    L.armL.rotation.x = -sw * 0.3; L.armR.rotation.x = sw * 0.3;
     // 面向前進方向（平滑轉身）
     const dx = target.x - p.x, dz = target.z - p.z;
     if (dx * dx + dz * dz > 1e-6) {
@@ -257,7 +262,7 @@ async function init() {
     renderer.render(scene, camera);
     if (running) raf = requestAnimationFrame(frame);
   }
-  function start() { if (running || reduceMotion) return; running = true; clock.getDelta(); raf = requestAnimationFrame(frame); }
+  function start() { if (running) return; running = true; clock.getDelta(); raf = requestAnimationFrame(frame); }
   function stop() { running = false; cancelAnimationFrame(raf); }
 
   stage.appendChild(renderer.domElement);
@@ -276,14 +281,21 @@ function makePerson({ top, bottom, skin, hair, skirt = false, hat = false }) {
   const add = (geo, material, x, y, z) => {
     const mesh = new THREE.Mesh(geo, material); mesh.position.set(x, y, z); mesh.castShadow = true; g.add(mesh); return mesh;
   };
+  // 四肢以關節為軸心，方便做走路擺動
+  const limb = (geo, material, x, y, len) => {
+    const pivot = new THREE.Group(); pivot.position.set(x, y, 0);
+    const mesh = new THREE.Mesh(geo, material); mesh.position.y = -len / 2; mesh.castShadow = true;
+    pivot.add(mesh); g.add(pivot); return pivot;
+  };
   const legGeo = new THREE.CylinderGeometry(0.11, 0.1, 0.85, 10);
-  add(legGeo, m(bottom), -0.13, 0.43, 0);
-  add(legGeo, m(bottom), 0.13, 0.43, 0);
+  const legL = limb(legGeo, m(bottom), -0.13, 0.86, 0.85);
+  const legR = limb(legGeo, m(bottom), 0.13, 0.86, 0.85);
   if (skirt) add(new THREE.ConeGeometry(0.42, 0.55, 14, 1, true), m(top), 0, 0.95, 0);
   add(new THREE.CapsuleGeometry(0.28, 0.55, 6, 12), m(top), 0, 1.3, 0);
   const armGeo = new THREE.CapsuleGeometry(0.075, 0.5, 4, 8);
-  add(armGeo, m(top), -0.36, 1.25, 0).rotation.z = 0.12;
-  add(armGeo, m(top), 0.36, 1.25, 0).rotation.z = -0.12;
+  const armL = limb(armGeo, m(top), -0.36, 1.55, 0.6); armL.rotation.z = 0.12;
+  const armR = limb(armGeo, m(top), 0.36, 1.55, 0.6); armR.rotation.z = -0.12;
+  g.userData.limbs = { legL, legR, armL, armR };
   add(new THREE.SphereGeometry(0.24, 16, 12), m(skin), 0, 1.95, 0);
   const hairMesh = add(new THREE.SphereGeometry(0.255, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2), m(hair), 0, 1.97, -0.02);
   hairMesh.rotation.x = -0.25;
