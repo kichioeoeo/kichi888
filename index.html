@@ -125,18 +125,15 @@
 
   /* 街景動畫：人來人往 */
   .street { --sky1: #fbeedb; --sky2: #f3d9b5; }
-  .walker { position: absolute; bottom: 0; left: 0; will-change: transform; animation: walkAcross var(--dur, 18s) linear infinite; animation-delay: var(--delay, 0s); }
+  .walker { position: absolute; bottom: 0; left: 0; will-change: transform; backface-visibility: hidden; animation: walkAcross var(--dur, 18s) linear infinite; animation-delay: var(--delay, 0s); }
   .walker.rtl { animation-name: walkAcrossRtl; }
   .walker.rtl .fig { transform: scaleX(-1); }
-  @keyframes walkAcross { from { transform: translateX(-80px); } to { transform: translateX(var(--w, 1400px)); } }
-  @keyframes walkAcrossRtl { from { transform: translateX(var(--w, 1400px)); } to { transform: translateX(-80px); } }
-  .fig { display: block; animation: bob .5s ease-in-out infinite alternate; }
-  @keyframes bob { from { translate: 0 0; } to { translate: 0 -2px; } }
-  .leg-a, .arm-b { transform-box: fill-box; transform-origin: top center; animation: swing .5s ease-in-out infinite alternate; }
-  .leg-b, .arm-a { transform-box: fill-box; transform-origin: top center; animation: swing .5s ease-in-out infinite alternate-reverse; }
-  @keyframes swing { from { transform: rotate(24deg); } to { transform: rotate(-24deg); } }
-  .idle { animation: idle 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: bottom center; }
-  @keyframes idle { 0%,100% { transform: none; } 50% { transform: translateY(-1.5px) rotate(-1deg); } }
+  @keyframes walkAcross { from { transform: translate3d(-80px,0,0); } to { transform: translate3d(var(--w, 1400px),0,0); } }
+  @keyframes walkAcrossRtl { from { transform: translate3d(var(--w, 1400px),0,0); } to { transform: translate3d(-80px,0,0); } }
+  .fig { display: block; }
+  .leg-a, .arm-b { transform-box: fill-box; transform-origin: top center; animation: swing .8s ease-in-out infinite alternate; }
+  .leg-b, .arm-a { transform-box: fill-box; transform-origin: top center; animation: swing .8s ease-in-out infinite alternate-reverse; }
+  @keyframes swing { from { transform: rotate(14deg); } to { transform: rotate(-14deg); } }
   .steam path { animation: steam 3s ease-in-out infinite; opacity: 0; }
   .steam path:nth-child(2) { animation-delay: 1s; } .steam path:nth-child(3) { animation-delay: 2s; }
   @keyframes steam { 0% { opacity: 0; transform: translateY(6px); } 40% { opacity: .7; } 100% { opacity: 0; transform: translateY(-18px); } }
@@ -144,8 +141,6 @@
   @keyframes sway { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
 
   /* 右下角預約浮動按鈕 */
-  @keyframes fabRing { 0% { transform: scale(1); opacity: .55; } 100% { transform: scale(1.6); opacity: 0; } }
-  .fab-ring { animation: fabRing 2.2s ease-out infinite; }
   .fab { bottom: max(1.25rem, env(safe-area-inset-bottom)); right: max(1.25rem, env(safe-area-inset-right)); }
 
   @media (prefers-reduced-motion: reduce) {
@@ -297,7 +292,7 @@
       <rect x="85" y="140" width="80" height="30" rx="15" fill="#2b1a10"/>
       <g fill="#e9a443" stroke="#a24d12" stroke-width="1.5"><path d="M95 156c2-7 14-7 16 0z"/><path d="M115 156c2-7 14-7 16 0z"/><path d="M135 156c2-7 14-7 16 0z"/></g>
       <!-- 店員 -->
-      <g class="idle"><circle cx="225" cy="140" r="11" fill="#f2c79b"/><rect x="214" y="128" width="22" height="6" rx="3" fill="#fffaf2"/><path d="M209 188v-26c0-8 7-12 16-12s16 4 16 12v26z" fill="#fffaf2"/></g>
+      <g><circle cx="225" cy="140" r="11" fill="#f2c79b"/><rect x="214" y="128" width="22" height="6" rx="3" fill="#fffaf2"/><path d="M209 188v-26c0-8 7-12 16-12s16 4 16 12v26z" fill="#fffaf2"/></g>
       <rect x="60" y="186" width="230" height="34" fill="#5a3a22"/>
     </svg>
     <!-- 人行道 -->
@@ -737,7 +732,6 @@
 <a href="https://calendar.app.google/qyiQZLN53Qrz1czx8" target="_blank" rel="noopener noreferrer"
    class="fab group fixed z-40 inline-flex items-center gap-2 rounded-full bg-ember-600 p-4 font-bold text-white shadow-xl shadow-ember-700/30 transition duration-200 hover:bg-ember-700 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember-500 focus-visible:ring-offset-2 active:scale-95 sm:px-6"
    aria-label="線上預約（另開新視窗）" title="線上預約">
-  <span class="fab-ring pointer-events-none absolute inset-0 -z-10 rounded-full bg-ember-500" aria-hidden="true"></span>
   <i data-lucide="calendar-check" class="h-6 w-6" aria-hidden="true"></i>
   <span class="hidden text-sm sm:inline">線上預約</span>
 </a>
@@ -1492,7 +1486,7 @@
       const w = Math.round(h * 0.45);
       const mv = c => opts.idle ? '' : c;
       return `<svg class="${mv('fig')}" style="display:block" width="${w}" height="${h}" viewBox="0 0 40 90">
-        <g class="${opts.idle ? 'idle' : ''}">
+        <g>
           <rect class="${mv('leg-a')}" x="15" y="56" width="5" height="30" rx="2.5" fill="${bot}"/>
           <rect class="${mv('leg-b')}" x="20" y="56" width="5" height="30" rx="2.5" fill="${bot}"/>
           <rect class="${mv('arm-a')}" x="10" y="27" width="4" height="24" rx="2" fill="${top}"/>
@@ -1519,10 +1513,10 @@
     setWidth();
     window.addEventListener('resize', setWidth, { passive: true });
     $('#queue').innerHTML = [62, 66, 58].map((h, i) =>
-      `<div>${person(h, { idle: true }).replace('class="idle"', `class="idle" style="animation-delay:${-i * 0.8}s"`)}</div>`).join('');
+      `<div>${person(h, { idle: true })}</div>`).join('');
     const small = window.innerWidth < 640;
-    lane($('#laneBack'), small ? 4 : 7, 52, 62, 26, 38);
-    lane($('#laneFront'), small ? 4 : 7, 76, 92, 16, 24);
+    lane($('#laneBack'), small ? 4 : 7, 52, 62, 32, 46);
+    lane($('#laneFront'), small ? 4 : 7, 76, 92, 22, 32);
   }
 
   /* ==========================================================
