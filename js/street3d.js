@@ -116,7 +116,7 @@ async function init() {
     g.scale.set(1.5, 0.8, 0.8); g.position.set(-3.9 + i * 0.4, 1.02, 0.5); shop.add(g);
   }
   // 店員
-  const chef = makePerson({ top: '#fffaf2', bottom: '#3d2616', skin: '#f2c79b', hair: '#2b1a10', hat: true });
+  const chef = makePerson({ age: 'adult', gender: 'm', skin: '#e8b48a', top: '#fffaf2', bottom: '#3d2616', hair: '#2b1a10', hairStyle: 'short', chef: true });
   chef.position.set(-3.1, 0, -0.3); shop.add(chef);
 
   // 門（入口）
@@ -145,28 +145,56 @@ async function init() {
     s.userData.t = i / 6; scene.add(s); return s;
   });
 
-  /* ---------- 路人 ---------- */
-  const SKIN = ['#f2c79b', '#e0a878', '#c98e5e', '#f6d3b0'];
-  const TOP = ['#c2601a', '#16873a', '#3b6fb6', '#8e44ad', '#d7261b', '#2b1a10', '#e9a443', '#5a3a22'];
-  const BOTTOM = ['#3d2616', '#2c3e50', '#6b4f3a', '#1f2a44', '#7a7a7a'];
-  const HAIR = ['#2b1a10', '#4a2c17', '#111111', '#8a5a2b'];
+  /* ---------- 路人（寫實比例、各年齡層） ---------- */
   const pick = a => a[Math.floor(Math.random() * a.length)];
   const EDGE = isSmall() ? 14 : 24;   // 從畫面外生成／消失的 x 範圍
   const DOOR = new THREE.Vector3(0, 0, -0.2);
   const walkers = [];
 
+  // 走路參數：速度（單位/秒）、步伐週期（秒）、擺動幅度
+  const GAIT = {
+    child:  { speed: 0.85, period: 0.75, amp: 0.45 },
+    teen:   { speed: 0.9,  period: 0.95, amp: 0.38 },
+    adult:  { speed: 0.85, period: 1.0,  amp: 0.34 },
+    office: { speed: 0.95, period: 0.95, amp: 0.32 },
+    middle: { speed: 0.75, period: 1.05, amp: 0.3 },
+    elder:  { speed: 0.5,  period: 1.3,  amp: 0.18 }
+  };
+  // 隨機組合：單人或結伴（親子、老夫妻、學生同學）
+  function makeGroup() {
+    const r = Math.random();
+    let members;
+    if (r < 0.14) members = [randomPerson('adult'), randomPerson('child')];               // 親子
+    else if (r < 0.22) members = [randomPerson('elder', 'm'), randomPerson('elder', 'f')]; // 老夫妻
+    else if (r < 0.28) members = [randomPerson('teen'), randomPerson('teen')];             // 同學
+    else members = [randomPerson(pick(['child', 'teen', 'adult', 'adult', 'office', 'office', 'middle', 'middle', 'elder']))];
+    const g = new THREE.Group();
+    members.forEach((m, i) => { m.position.set(i ? 0.75 : 0, 0, i ? -0.35 : 0); g.add(m); });
+    g.userData.members = members;
+    g.userData.limbs = members.map(m => m.userData);
+    g.userData.bag = members[0].userData.bag;
+    g.userData.gait = members.reduce((slow, m) => (GAIT[m.userData.age].speed < GAIT[slow].speed ? m.userData.age : slow), members[0].userData.age);
+    return g;
+  }
+
   function spawn(w, initial) {
-    const fromShop = !initial && Math.random() < 0.3;     // 從店裡提著外帶走出來
-    w.speed = 0.7 + Math.random() * 0.3;
-    w.phase = Math.random() * Math.PI * 2;                  // 每秒移動距離（約 45–70 秒走完全程）
+    if (w.mesh) {                                       // 每次重新出場都換一組新面孔（釋放舊模型記憶體）
+      scene.remove(w.mesh);
+      w.mesh.traverse(o => { if (o.isMesh) { o.geometry.dispose(); o.material.dispose(); } });
+    }
+    w.mesh = makeGroup();
+    scene.add(w.mesh);
+    const gait = GAIT[w.mesh.userData.gait];
+    const fromShop = !initial && Math.random() < 0.3;   // 從店裡提著外帶走出來
+    w.speed = gait.speed * (0.9 + Math.random() * 0.2);
+    w.phase = Math.random() * Math.PI * 2;
     w.lane = 2.4 + Math.random() * 2.1;
     w.dir = Math.random() < 0.5 ? 1 : -1;
-    w.enter = !fromShop && Math.random() < 0.35;           // 是否走進店裡
-    w.mesh.scale.setScalar(0.92 + Math.random() * 0.16);
-    w.mesh.userData.bag.visible = fromShop || Math.random() < 0.2;
+    w.enter = !fromShop && Math.random() < 0.35;        // 是否走進店裡
+    w.mesh.userData.bag.visible = fromShop;
     if (fromShop) {
       w.state = 'exit';
-      w.mesh.position.set(DOOR.x + (Math.random() - 0.5) * 0.6, 0, DOOR.z);
+      w.mesh.position.set(DOOR.x + (Math.random() - 0.5) * 0.4, 0, DOOR.z);
       w.opacity = 0;
     } else {
       w.state = 'walk';
@@ -177,18 +205,16 @@ async function init() {
     setOpacity(w.mesh, w.opacity);
   }
 
-  const count = isSmall() ? 7 : 14;
+  const count = isSmall() ? 6 : 12;
   for (let i = 0; i < count; i++) {
-    const mesh = makePerson({ top: pick(TOP), bottom: pick(BOTTOM), skin: pick(SKIN), hair: pick(HAIR), skirt: Math.random() < 0.3 });
-    scene.add(mesh);
-    const w = { mesh };
+    const w = {};
     spawn(w, true);
     walkers.push(w);
   }
 
-  // 店門口排隊的人
-  [[-3.7, 1.35], [-3.0, 1.55], [-2.3, 1.75]].forEach(([x, z], i) => {
-    const p = makePerson({ top: pick(TOP), bottom: pick(BOTTOM), skin: pick(SKIN), hair: pick(HAIR) });
+  // 店門口排隊的人（不同年齡）
+  [['middle', -3.7, 1.35], ['child', -3.05, 1.5], ['office', -2.4, 1.7]].forEach(([age, x, z], i) => {
+    const p = randomPerson(age);
     p.position.set(x, 0, z); p.rotation.y = Math.PI + 0.12 * (i - 1);
     scene.add(p);
   });
@@ -214,11 +240,16 @@ async function init() {
       w.opacity = Math.min(w.opacity + dt * 1.2, 1); setOpacity(w.mesh, w.opacity);
       if (Math.abs(p.z - w.lane) < 0.02) { w.state = 'walk'; w.enter = false; }
     }
-    // 走路動作：每 1 秒一步、幅度小，看起來自然不抖
-    w.phase += dt * Math.PI * 2 / 1.0;
-    const sw = Math.sin(w.phase), L = w.mesh.userData.limbs;
-    L.legL.rotation.x = sw * 0.35; L.legR.rotation.x = -sw * 0.35;
-    L.armL.rotation.x = -sw * 0.3; L.armR.rotation.x = sw * 0.3;
+    // 走路動作：依年齡調整步伐快慢與幅度（長輩小步慢走、小孩步伐輕快）
+    const groupGait = GAIT[w.mesh.userData.gait];
+    w.phase += dt * Math.PI * 2 / groupGait.period;
+    w.mesh.userData.limbs.forEach((L, i) => {
+      const g = GAIT[L.age];
+      const sw = Math.sin(w.phase * (groupGait.period / g.period) + i * 1.3);
+      L.legL.rotation.x = sw * g.amp; L.legR.rotation.x = -sw * g.amp;
+      L.armL.rotation.x = -sw * g.amp * 0.8;
+      if (!L.cane) L.armR.rotation.x = sw * g.amp * 0.8;
+    });
     // 面向前進方向（平滑轉身）
     const dx = target.x - p.x, dz = target.z - p.z;
     if (dx * dx + dz * dz > 1e-6) {
@@ -275,34 +306,159 @@ async function init() {
 }
 
 /* ---------- 小工具 ---------- */
-function makePerson({ top, bottom, skin, hair, skirt = false, hat = false }) {
+/* 寫實人物：以公尺為單位建模，再整體放大配合場景比例 */
+const SKINS = ['#f3cfae', '#e8b48a', '#d49a6a', '#b97d52', '#f6dcc2'];
+const HAIR_DARK = ['#1b120c', '#2b1a10', '#3a2416', '#4a2c17', '#6b4423'];
+const HAIR_GREY = ['#bdb7ae', '#d8d3cb', '#9e978c', '#efebe4'];
+const CASUAL = ['#c2601a', '#16873a', '#3b6fb6', '#8e44ad', '#d7261b', '#e9a443', '#5a7d9a', '#f1e4cf', '#2f4f4f', '#b5651d'];
+const PANTS = ['#2c3e50', '#1f2a44', '#3d2616', '#6b4f3a', '#4b4b4b', '#7d8ca3'];
+const SCENE_SCALE = 1.35;
+
+function randomPerson(age, gender) {
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  gender = gender || (Math.random() < 0.5 ? 'm' : 'f');
+  const o = { age, gender, skin: pick(SKINS) };
+  if (age === 'child') {
+    Object.assign(o, { top: pick(['#f4b400', '#e94b3c', '#4aa3df', '#7bc96f', '#f78fb3']), bottom: pick(['#1f2a44', '#3b6fb6', '#6b4f3a']),
+      hair: pick(HAIR_DARK), hairStyle: gender === 'f' ? pick(['pony', 'long']) : 'short', skirt: gender === 'f' && Math.random() < 0.5,
+      backpack: Math.random() < 0.6 ? pick(['#d7261b', '#3b6fb6', '#f4b400']) : null });
+  } else if (age === 'teen') {
+    Object.assign(o, { top: '#f5f5f0', bottom: gender === 'f' ? '#2c3e66' : '#3a3f4a', hair: pick(HAIR_DARK),
+      hairStyle: gender === 'f' ? pick(['pony', 'long', 'bob']) : pick(['short', 'cap']), skirt: gender === 'f', backpack: pick(['#1f2a44', '#2b1a10', '#16873a']) });
+  } else if (age === 'office') {
+    Object.assign(o, { top: pick(['#ffffff', '#dfe9f5', '#f1e4cf']), jacket: pick(['#1f2a44', '#2b2b2b', '#4a4a55', null]), bottom: pick(['#1f2a44', '#2b2b2b', '#4a4a55']),
+      hair: pick(HAIR_DARK), hairStyle: gender === 'f' ? pick(['bun', 'bob', 'long']) : 'short', tie: gender === 'm' ? pick(['#a24d12', '#16873a', '#7a1f1f']) : null,
+      skirt: gender === 'f' && Math.random() < 0.5, briefcase: Math.random() < 0.5, glasses: Math.random() < 0.35 });
+  } else if (age === 'middle') {
+    Object.assign(o, { top: pick(CASUAL), jacket: Math.random() < 0.4 ? pick(['#6b4f3a', '#5a7d9a', '#8a7f6a']) : null, bottom: pick(PANTS),
+      hair: Math.random() < 0.5 ? pick(HAIR_DARK) : '#5a5048', hairStyle: gender === 'f' ? pick(['bob', 'bun', 'perm']) : pick(['short', 'thin']),
+      girth: 1.12, glasses: Math.random() < 0.4, handbag: gender === 'f' && Math.random() < 0.6 });
+  } else if (age === 'elder') {
+    Object.assign(o, { top: pick(['#8a7f6a', '#a0522d', '#6b7b5e', '#b99c7a', '#7a6a8a']), jacket: Math.random() < 0.5 ? pick(['#5b4a3a', '#4a5560']) : null,
+      bottom: pick(['#4b4b4b', '#5b4a3a', '#2c3e50']), hair: pick(HAIR_GREY), hairStyle: gender === 'f' ? pick(['perm', 'bun']) : pick(['thin', 'bald', 'cap']),
+      stoop: 0.12 + Math.random() * 0.08, cane: Math.random() < 0.5, glasses: Math.random() < 0.7, girth: 1.05 });
+  } else {
+    Object.assign(o, { top: pick(CASUAL), bottom: pick(PANTS), hair: pick(HAIR_DARK),
+      hairStyle: gender === 'f' ? pick(['long', 'pony', 'bob', 'bun']) : pick(['short', 'short', 'cap']),
+      skirt: gender === 'f' && Math.random() < 0.35, handbag: gender === 'f' && Math.random() < 0.4, backpack: Math.random() < 0.2 ? '#2b2b2b' : null });
+  }
+  return makePerson(o);
+}
+
+function makePerson(o) {
+  const { age = 'adult', gender = 'm', skin = '#e8b48a', top = '#c2601a', bottom = '#2c3e50', hair = '#2b1a10', hairStyle = 'short' } = o;
+  // 身高與頭身比：小孩約 5 頭身、成人約 7.5 頭身、長輩略矮
+  const H = { child: 1.15, teen: 1.62, adult: gender === 'f' ? 1.62 : 1.74, office: gender === 'f' ? 1.63 : 1.75,
+    middle: gender === 'f' ? 1.58 : 1.7, elder: gender === 'f' ? 1.52 : 1.62 }[age] * (0.97 + Math.random() * 0.06);
+  const headH = age === 'child' ? H / 5.2 : age === 'teen' ? H / 7 : H / 7.5;
+  const headR = headH / 2.2;
+  const girth = (o.girth || 1) * (age === 'child' ? 0.78 : gender === 'f' ? 0.9 : 1);
+  const legLen = H * (age === 'child' ? 0.44 : 0.47);
+  const hipY = legLen + 0.06;
+  const torsoH = H - hipY - headH - 0.05;
+  const shoulderY = hipY + torsoH;
+  const shoulderW = (gender === 'f' ? 0.17 : 0.2) * girth * (age === 'child' ? 0.85 : 1);
+
   const g = new THREE.Group();
-  const m = c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.8, transparent: true });
-  const add = (geo, material, x, y, z) => {
-    const mesh = new THREE.Mesh(geo, material); mesh.position.set(x, y, z); mesh.castShadow = true; g.add(mesh); return mesh;
+  const body = new THREE.Group(); g.add(body);       // 上半身（長輩駝背用）
+  const cache = {};
+  const m = c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.75, transparent: true });
+  const mesh = (geo, color, parent, x = 0, y = 0, z = 0) => {
+    const me = new THREE.Mesh(geo, m(color)); me.position.set(x, y, z); me.castShadow = true; parent.add(me); return me;
   };
-  // 四肢以關節為軸心，方便做走路擺動
-  const limb = (geo, material, x, y, len) => {
-    const pivot = new THREE.Group(); pivot.position.set(x, y, 0);
-    const mesh = new THREE.Mesh(geo, material); mesh.position.y = -len / 2; mesh.castShadow = true;
-    pivot.add(mesh); g.add(pivot); return pivot;
+  const limb = (parent, x, y) => { const p = new THREE.Group(); p.position.set(x, y, 0); parent.add(p); return p; };
+
+  // 腿＋鞋
+  const legR0 = 0.065 * girth, legR1 = 0.045 * girth;
+  const legL = limb(g, -0.085 * girth, hipY), legR = limb(g, 0.085 * girth, hipY);
+  [legL, legR].forEach(leg => {
+    mesh(new THREE.CylinderGeometry(legR0, legR1, legLen, 10), bottom, leg, 0, -legLen / 2, 0);
+    mesh(new THREE.BoxGeometry(0.09, 0.06, 0.22), age === 'child' ? '#ffffff' : (age === 'office' ? '#1a1a1a' : '#3a2a20'), leg, 0, -legLen - 0.03, 0.04);
+  });
+  if (o.skirt) mesh(new THREE.CylinderGeometry(0.15 * girth, 0.24 * girth, legLen * 0.55, 16, 1, true), bottom, g, 0, hipY - legLen * 0.25, 0).material.side = THREE.DoubleSide;
+
+  // 身體：腰到肩，略寬肩窄腰、前後較薄
+  body.position.y = hipY;
+  const torso = mesh(new THREE.CylinderGeometry(shoulderW, 0.15 * girth, torsoH, 16), o.jacket || top, body, 0, torsoH / 2, 0);
+  torso.scale.z = 0.62;
+  if (o.jacket) {           // 外套敞開露出內搭
+    const inner = mesh(new THREE.BoxGeometry(shoulderW * 0.55, torsoH * 0.85, 0.02), top, body, 0, torsoH * 0.52, shoulderW * 0.6);
+    inner.castShadow = false;
+  }
+  if (o.chef) mesh(new THREE.BoxGeometry(shoulderW * 1.4, torsoH * 1.15, 0.02), '#ffffff', body, 0, torsoH * 0.4, shoulderW * 0.64);
+  if (o.tie) mesh(new THREE.BoxGeometry(0.04, torsoH * 0.6, 0.015), o.tie, body, 0, torsoH * 0.6, shoulderW * 0.64);
+  if (o.backpack) mesh(new THREE.BoxGeometry(shoulderW * 1.5, torsoH * 0.7, 0.14), o.backpack, body, 0, torsoH * 0.55, -shoulderW * 0.75);
+
+  // 脖子與頭
+  mesh(new THREE.CylinderGeometry(headR * 0.38, headR * 0.42, 0.07, 10), skin, body, 0, torsoH + 0.035, 0);
+  const head = new THREE.Group(); head.position.y = torsoH + 0.05 + headR * 1.05; body.add(head);
+  const skull = mesh(new THREE.SphereGeometry(headR, 20, 16), skin, head); skull.scale.set(0.92, 1.12, 1);
+  // 五官：眼睛、眉毛、鼻子、嘴巴、耳朵
+  const eyeY = headR * 0.1, faceZ = headR * 0.93;
+  [-1, 1].forEach(sd => {
+    mesh(new THREE.SphereGeometry(headR * 0.11, 8, 6), '#1b120c', head, sd * headR * 0.36, eyeY, faceZ - 0.005).castShadow = false;
+    mesh(new THREE.BoxGeometry(headR * 0.32, headR * 0.06, 0.01), age === 'elder' ? '#9e978c' : '#2b1a10', head, sd * headR * 0.36, eyeY + headR * 0.22, faceZ - 0.01).castShadow = false;
+    mesh(new THREE.SphereGeometry(headR * 0.2, 8, 6), skin, head, sd * headR * 0.9, eyeY - headR * 0.05, 0).scale.set(0.5, 1, 0.7);
+  });
+  const nose = mesh(new THREE.ConeGeometry(headR * 0.12, headR * 0.3, 6), skin, head, 0, -headR * 0.12, faceZ + headR * 0.05);
+  nose.rotation.x = Math.PI / 2; nose.castShadow = false;
+  mesh(new THREE.BoxGeometry(headR * 0.42, headR * 0.06, 0.01), '#a0524a', head, 0, -headR * 0.45, faceZ - 0.03).castShadow = false;
+  if (age === 'child') [-1, 1].forEach(sd => { mesh(new THREE.SphereGeometry(headR * 0.12, 8, 6), '#f29a8a', head, sd * headR * 0.55, -headR * 0.2, faceZ - 0.04).castShadow = false; });
+  if (o.glasses) {
+    [-1, 1].forEach(sd => { const r = mesh(new THREE.TorusGeometry(headR * 0.2, headR * 0.03, 6, 14), '#2b2b2b', head, sd * headR * 0.36, eyeY, faceZ + 0.01); r.castShadow = false; });
+    mesh(new THREE.BoxGeometry(headR * 0.3, headR * 0.03, 0.01), '#2b2b2b', head, 0, eyeY, faceZ + 0.01).castShadow = false;
+  }
+
+  // 髮型
+  const hairCap = (thetaLen = Math.PI * 0.55) => {
+    const c = mesh(new THREE.SphereGeometry(headR * 1.06, 20, 14, 0, Math.PI * 2, 0, thetaLen), hair, head, 0, headR * 0.05, -headR * 0.04);
+    c.scale.set(0.95, 1.12, 1.02); c.rotation.x = -0.35; return c;
   };
-  const legGeo = new THREE.CylinderGeometry(0.11, 0.1, 0.85, 10);
-  const legL = limb(legGeo, m(bottom), -0.13, 0.86, 0.85);
-  const legR = limb(legGeo, m(bottom), 0.13, 0.86, 0.85);
-  if (skirt) add(new THREE.ConeGeometry(0.42, 0.55, 14, 1, true), m(top), 0, 0.95, 0);
-  add(new THREE.CapsuleGeometry(0.28, 0.55, 6, 12), m(top), 0, 1.3, 0);
-  const armGeo = new THREE.CapsuleGeometry(0.075, 0.5, 4, 8);
-  const armL = limb(armGeo, m(top), -0.36, 1.55, 0.6); armL.rotation.z = 0.12;
-  const armR = limb(armGeo, m(top), 0.36, 1.55, 0.6); armR.rotation.z = -0.12;
-  g.userData.limbs = { legL, legR, armL, armR };
-  add(new THREE.SphereGeometry(0.24, 16, 12), m(skin), 0, 1.95, 0);
-  const hairMesh = add(new THREE.SphereGeometry(0.255, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2), m(hair), 0, 1.97, -0.02);
-  hairMesh.rotation.x = -0.25;
-  if (hat) add(new THREE.CylinderGeometry(0.2, 0.22, 0.3, 14), m('#ffffff'), 0, 2.27, 0);
-  const bag = add(new THREE.BoxGeometry(0.28, 0.32, 0.18), m('#fffaf2'), 0.46, 0.85, 0.05);
+  if (hairStyle === 'short') hairCap(Math.PI * 0.5);
+  else if (hairStyle === 'thin') hairCap(Math.PI * 0.32);
+  else if (hairStyle === 'bald') {
+    const ring = mesh(new THREE.TorusGeometry(headR * 0.92, headR * 0.16, 8, 20, Math.PI * 1.3), hair, head, 0, 0, -headR * 0.15);
+    ring.rotation.set(Math.PI / 2, 0, Math.PI * 0.85);
+  } else if (hairStyle === 'cap') {
+    hairCap(Math.PI * 0.45);
+    const capColor = age === 'elder' ? '#5b4a3a' : ['#d7261b', '#1f2a44', '#16873a'][Math.floor(Math.random() * 3)];
+    mesh(new THREE.SphereGeometry(headR * 1.1, 18, 10, 0, Math.PI * 2, 0, Math.PI * 0.4), capColor, head, 0, headR * 0.15, 0);
+    mesh(new THREE.BoxGeometry(headR * 1.2, headR * 0.06, headR * 0.8), capColor, head, 0, headR * 0.45, headR * 0.9);
+  } else {
+    hairCap(Math.PI * 0.6);
+    if (hairStyle === 'long') mesh(new THREE.BoxGeometry(headR * 1.8, headR * 2.4, headR * 0.5), hair, head, 0, -headR * 0.9, -headR * 0.6);
+    if (hairStyle === 'bob') mesh(new THREE.CylinderGeometry(headR * 1.08, headR * 1.12, headR * 1.1, 16, 1, true), hair, head, 0, -headR * 0.2, -headR * 0.08).material.side = THREE.DoubleSide;
+    if (hairStyle === 'pony') { const t = mesh(new THREE.CapsuleGeometry(headR * 0.22, headR * 1.1, 4, 8), hair, head, 0, -headR * 0.3, -headR * 1.1); t.rotation.x = 0.3; }
+    if (hairStyle === 'bun') mesh(new THREE.SphereGeometry(headR * 0.38, 12, 10), hair, head, 0, headR * 0.7, -headR * 0.75);
+    if (hairStyle === 'perm') for (let i = 0; i < 9; i++) {
+      const a = i / 9 * Math.PI * 2;
+      mesh(new THREE.SphereGeometry(headR * 0.32, 8, 6), hair, head, Math.cos(a) * headR * 0.85, headR * 0.35 + Math.sin(i) * headR * 0.15, Math.sin(a) * headR * 0.85 - headR * 0.1);
+    }
+  }
+  if (o.chef) mesh(new THREE.CylinderGeometry(headR * 0.95, headR * 0.85, headR * 1.2, 16), '#ffffff', head, 0, headR * 1.3, 0);
+
+  // 手臂（袖子＋手掌），以肩膀為軸心
+  const armLen = H * 0.36;
+  const sleeve = o.jacket || top;
+  const armL = limb(body, -(shoulderW + 0.035), torsoH - 0.03), armR = limb(body, shoulderW + 0.035, torsoH - 0.03);
+  [armL, armR].forEach((arm, i) => {
+    arm.rotation.z = i ? -0.08 : 0.08;
+    mesh(new THREE.CapsuleGeometry(0.038 * girth, armLen - 0.1, 4, 8), sleeve, arm, 0, -armLen / 2, 0);
+    mesh(new THREE.SphereGeometry(0.042, 10, 8), skin, arm, 0, -armLen + 0.01, 0);
+  });
+  // 手上的東西
+  if (o.briefcase) mesh(new THREE.BoxGeometry(0.08, 0.26, 0.36), '#3a2a20', armR, 0, -armLen - 0.1, 0);
+  if (o.handbag) mesh(new THREE.BoxGeometry(0.1, 0.18, 0.24), ['#a24d12', '#7a1f1f', '#2b2b2b'][Math.floor(Math.random() * 3)], armL, 0, -armLen * 0.55, 0.02);
+  let cane = null;
+  if (o.cane) { cane = mesh(new THREE.CylinderGeometry(0.014, 0.014, hipY - 0.05, 6), '#5b3a22', g, shoulderW + 0.06, (hipY - 0.05) / 2, 0.12); }
+  const bag = mesh(new THREE.BoxGeometry(0.2, 0.22, 0.14), '#fffaf2', armL, 0, -armLen - 0.1, 0);   // 鍋貼外帶袋
+  mesh(new THREE.BoxGeometry(0.21, 0.04, 0.15), '#c2601a', bag, 0, 0.04, 0);
   bag.visible = false;
-  g.userData.bag = bag;
+
+  if (o.stoop) { body.rotation.x = o.stoop; head.rotation.x = -o.stoop * 0.6; }
+
+  g.scale.setScalar(SCENE_SCALE);
+  Object.assign(g.userData, { age, legL, legR, armL, armR, bag, cane: !!cane });
   return g;
 }
 
