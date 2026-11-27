@@ -137,6 +137,10 @@
   .lantern { transform-box: fill-box; transform-origin: top center; animation: sway 3s ease-in-out infinite alternate; }
   @keyframes sway { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
 
+  /* 3D 街景：載入成功後隱藏 2D 版本 */
+  #streetStage.is-3d > :not(canvas) { display: none; }
+  .street3d-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
   /* 右下角預約浮動按鈕 */
   .fab { bottom: max(1.25rem, env(safe-area-inset-bottom)); right: max(1.25rem, env(safe-area-inset-right)); }
 
@@ -252,7 +256,7 @@
     <p class="eyebrow">門口的日常 · EVERYDAY</p>
     <h2 class="section-title">鍋貼一起鍋，人潮就來了</h2>
   </div>
-  <div id="streetStage" class="relative mx-auto mt-6 h-[260px] w-full sm:h-[300px]" aria-hidden="true">
+  <div id="streetStage" class="relative mx-auto mt-6 h-[300px] w-full sm:h-[420px]" aria-hidden="true">
     <!-- 遠景建築 -->
     <svg class="absolute inset-x-0 bottom-[70px] h-[150px] w-full" viewBox="0 0 1200 150" preserveAspectRatio="xMidYMax slice">
       <g fill="#e6c79c">
@@ -1532,5 +1536,7 @@
   initReveal();
 })();
 </script>
+<!-- 3D 街景（Three.js）；失敗時保留 2D 動畫 -->
+<script type="module" src="js/street3d.js"></script>
 </body>
 </html>
