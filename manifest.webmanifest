@@ -1,0 +1,23 @@
+{
+  "name": "餃浸腦汁鍋貼店",
+  "short_name": "餃浸腦汁",
+  "description": "餃浸腦汁鍋貼店：每日現包、現點現煎。線上點餐、冷凍禮盒、門市據點一次看。",
+  "lang": "zh-Hant-TW",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fffaf2",
+  "theme_color": "#3d2616",
+  "categories": ["food", "shopping"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "線上點餐", "url": "./#order", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "門市據點", "url": "./#locations", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
