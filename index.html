@@ -118,6 +118,11 @@
   /* 地圖圖層 */
   #mapLayer { transition: transform .7s cubic-bezier(.22,.8,.3,1); transform-box: view-box; transform-origin: 300px 190px; }
 
+  /* 右下角預約浮動按鈕 */
+  @keyframes fabRing { 0% { transform: scale(1); opacity: .55; } 100% { transform: scale(1.6); opacity: 0; } }
+  .fab-ring { animation: fabRing 2.2s ease-out infinite; }
+  .fab { bottom: max(1.25rem, env(safe-area-inset-bottom)); right: max(1.25rem, env(safe-area-inset-right)); }
+
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
@@ -644,6 +649,15 @@
 </div>
 
 <!-- Toast 容器 -->
+<!-- ============ 預約浮動按鈕（右下角） ============ -->
+<a href="https://calendar.app.google/qyiQZLN53Qrz1czx8" target="_blank" rel="noopener noreferrer"
+   class="fab group fixed z-40 inline-flex items-center gap-2 rounded-full bg-ember-600 p-4 font-bold text-white shadow-xl shadow-ember-700/30 transition duration-200 hover:bg-ember-700 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember-500 focus-visible:ring-offset-2 active:scale-95 sm:px-6"
+   aria-label="線上預約（另開新視窗）" title="線上預約">
+  <span class="fab-ring pointer-events-none absolute inset-0 -z-10 rounded-full bg-ember-500" aria-hidden="true"></span>
+  <i data-lucide="calendar-check" class="h-6 w-6" aria-hidden="true"></i>
+  <span class="hidden text-sm sm:inline">線上預約</span>
+</a>
+
 <div id="toasts" class="pointer-events-none fixed inset-x-4 top-20 z-[70] flex flex-col items-center gap-2 sm:left-auto sm:right-6 sm:items-end" role="status" aria-live="polite"></div>
 
 <script>
