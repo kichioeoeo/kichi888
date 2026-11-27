@@ -86,7 +86,10 @@ async function init() {
   const roof = box(SHOP_W + 0.4, 0.4, 6.4, mat('#3d2616')); roof.position.set(0, SHOP_H + 0.2, -3); shop.add(roof);
 
   // 招牌（Canvas 繪製文字）
-  if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch {} }
+  // 招牌用 Canvas 畫字，需先確定源泉圓體已載入
+  if (document.fonts && document.fonts.load) {
+    try { await Promise.all([document.fonts.load('italic 900 92px "GenSen Rounded TW"', '餃浸腦汁鍋貼店'), document.fonts.load('700 52px "GenSen Rounded TW"', '現煎')]); } catch {}
+  }
   const signTex = makeSignTexture();
   const sign = new THREE.Mesh(new THREE.BoxGeometry(SHOP_W - 0.6, 1.4, 0.3),
     [mat('#3d2616'), mat('#3d2616'), mat('#3d2616'), mat('#3d2616'), new THREE.MeshBasicMaterial({ map: signTex }), mat('#3d2616')]);
@@ -472,12 +475,12 @@ function makeSignTexture() {
   c.width = 1024; c.height = 160;
   const x = c.getContext('2d');
   x.fillStyle = '#3d2616'; x.fillRect(0, 0, c.width, c.height);
-  x.font = 'italic 900 92px "Noto Sans TC", sans-serif';
+  x.font = 'italic 900 92px "GenSen Rounded TW", sans-serif';
   x.fillStyle = '#fffaf2'; x.textAlign = 'center'; x.textBaseline = 'middle';
   x.fillText('餃浸腦汁鍋貼店', 440, 84);
   x.save(); x.translate(860, 80); x.transform(1, 0, -0.2, 1, 0, 0);
   x.fillStyle = '#16873a'; x.fillRect(-70, -38, 140, 76);
-  x.font = '700 52px "Noto Sans TC", sans-serif'; x.fillStyle = '#ffffff';
+  x.font = '700 52px "GenSen Rounded TW", sans-serif'; x.fillStyle = '#ffffff';
   x.fillText('現煎', 0, 4); x.restore();
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;

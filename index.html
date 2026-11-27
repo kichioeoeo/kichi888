@@ -11,10 +11,16 @@
 <!-- 啟用 JS 標記（讓 reveal 動畫僅在有 JS 時生效） -->
 <script>document.documentElement.classList.add('js');</script>
 
-<!-- 字體：典雅標題（Noto Serif TC）＋ 優雅無襯線（Noto Sans TC） -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
+<!-- 字體：源泉圓體 GenSen Rounded（SIL OFL 1.1，fonts/OFL.txt）
+     已依網頁實際用字縮減為子集；未收錄的字會改用系統字型顯示 -->
+<link rel="preload" href="fonts/GenSenRounded2TW-R.subset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/GenSenRounded2TW-H.subset.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+  @font-face { font-family: "GenSen Rounded TW"; src: url("fonts/GenSenRounded2TW-R.subset.woff2") format("woff2"); font-weight: 100 449; font-display: swap; }
+  @font-face { font-family: "GenSen Rounded TW"; src: url("fonts/GenSenRounded2TW-M.subset.woff2") format("woff2"); font-weight: 450 599; font-display: swap; }
+  @font-face { font-family: "GenSen Rounded TW"; src: url("fonts/GenSenRounded2TW-B.subset.woff2") format("woff2"); font-weight: 600 749; font-display: swap; }
+  @font-face { font-family: "GenSen Rounded TW"; src: url("fonts/GenSenRounded2TW-H.subset.woff2") format("woff2"); font-weight: 750 1000; font-display: swap; }
+</style>
 
 <!-- Tailwind CSS CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -28,8 +34,8 @@
           cream: { 50: '#fffaf2', 100: '#faf3e6', 200: '#f3e8d3', 300: '#e8d8b9' }
         },
         fontFamily: {
-          sans:  ['"Noto Sans TC"', 'system-ui', '-apple-system', 'sans-serif'],
-          serif: ['"Noto Serif TC"', 'Georgia', 'serif']
+          sans:  ['"GenSen Rounded TW"', 'system-ui', '-apple-system', '"PingFang TC"', '"Microsoft JhengHei"', 'sans-serif'],
+          serif: ['"GenSen Rounded TW"', 'system-ui', '-apple-system', '"PingFang TC"', '"Microsoft JhengHei"', 'sans-serif']
         }
       }
     }
@@ -120,7 +126,7 @@
   #mapLayer { transition: transform .7s cubic-bezier(.22,.8,.3,1); transform-box: view-box; transform-origin: 300px 190px; }
 
   /* LOGO 字標：粗斜體＋綠色標籤（發想自原始 LOGO） */
-  .logo-word { font-family: "Noto Sans TC", sans-serif; font-style: italic; transform: skewX(-8deg); letter-spacing: .04em; display: inline-block; }
+  .logo-word { font-family: "GenSen Rounded TW", sans-serif; font-style: italic; transform: skewX(-8deg); letter-spacing: .04em; display: inline-block; }
   .logo-tag { background: #16873a; color: #fff; padding: 0 .45em; border-radius: 3px; transform: skewX(-12deg); display: inline-block; letter-spacing: .15em; }
 
   /* 街景動畫：人來人往 */
@@ -278,9 +284,9 @@
       </g>
       <rect x="20" y="40" width="310" height="180" rx="6" fill="#75492a"/>
       <rect x="20" y="40" width="310" height="44" rx="6" fill="#3d2616"/>
-      <text x="148" y="70" text-anchor="middle" font-family="Noto Sans TC, sans-serif" font-size="21" font-weight="900" font-style="italic" fill="#fffaf2" letter-spacing="2">餃浸腦汁鍋貼店</text>
+      <text x="148" y="70" text-anchor="middle" font-family="GenSen Rounded TW, sans-serif" font-size="21" font-weight="900" font-style="italic" fill="#fffaf2" letter-spacing="2">餃浸腦汁鍋貼店</text>
       <rect x="268" y="52" width="46" height="22" rx="3" fill="#16873a" transform="skewX(-10)"/>
-      <text x="281" y="68" text-anchor="middle" font-family="Noto Sans TC, sans-serif" font-size="12" font-weight="700" fill="#fff">現煎</text>
+      <text x="281" y="68" text-anchor="middle" font-family="GenSen Rounded TW, sans-serif" font-size="12" font-weight="700" fill="#fff">現煎</text>
       <!-- 遮雨棚 -->
       <g><path d="M10 84h330l-14 26H24z" fill="#c2601a"/>
         <path d="M24 110h28l-14 10zM80 110h28l-14 10zM136 110h28l-14 10zM192 110h28l-14 10zM248 110h28l-14 10zM304 110h22l-11 10z" fill="#c2601a"/>
@@ -1174,7 +1180,7 @@
     s += '<line x1="-400" y1="200" x2="1000" y2="200" stroke="#f9dba6" stroke-width="14"/>';
     s += '<line x1="330" y1="-300" x2="330" y2="700" stroke="#f9dba6" stroke-width="14"/>';
     s += '<line x1="-120" y1="560" x2="720" y2="-130" stroke="#f9dba6" stroke-width="10"/>';
-    s += '<g font-family="Noto Sans TC, sans-serif" font-size="11" font-weight="700" fill="#8a6b4a">';
+    s += '<g font-family="GenSen Rounded TW, sans-serif" font-size="11" font-weight="700" fill="#8a6b4a">';
     s += '<text id="mapL1" x="30" y="195">忠孝東路四段</text>';
     s += '<text id="mapL2" x="324" y="330" transform="rotate(-90 324 330)">敦化南路</text>';
     s += '<text id="mapL3" x="470" y="110">光復南路</text>';
