@@ -147,6 +147,9 @@
   #streetStage.is-3d > :not(canvas) { display: none; }
   .street3d-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
+  /* 像素風商品圖：完整顯示、保持像素銳利 */
+  img.pixel-art { object-fit: contain !important; image-rendering: pixelated; background: #ffffff; }
+
   /* 右下角預約浮動按鈕 */
   .fab { bottom: max(1.25rem, env(safe-area-inset-bottom)); right: max(1.25rem, env(safe-area-inset-right)); }
 
@@ -764,11 +767,15 @@
    * ========================================================== */
   const IMG = {
     gyoza1: '1563245372-f21724e3856d', gyoza2: '1496116218417-1a781b1c416c',
-    gyoza3: '1534422298391-e4f8c172dddb', spicy: 'images/spicy-gyoza.svg',
+    gyoza3: '1534422298391-e4f8c172dddb',
     gyoza5: '1625220194771-7ebdea0b70b9', soup: '1547592180-85f173990554',
     drink: '1556679343-c7306c1976bc', salad: '1512621776951-a57141f2eefd',
     plate: '1504674900247-0877df9cc836', gift: '1549465220-1a8b9238cd48',
-    room: '1555396273-367ea4eb4db5'
+    room: '1555396273-367ea4eb4db5',
+    // 像素風商品圖
+    pxPork: 'images/pixel/pork.png', pxCabbage: 'images/pixel/cabbage.png', pxSpicy: 'images/pixel/spicy.png',
+    pxCheeseCorn: 'images/pixel/cheese-corn.png', pxGift: 'images/pixel/gift-zhaocai.png',
+    pxShrimp: 'images/pixel/shrimp.png', pxHotSour: 'images/pixel/hot-sour-soup.png', pxCornSoup: 'images/pixel/corn-soup.png'
   };
 
   const CATS = [
@@ -780,20 +787,20 @@
   const TAG_FILTERS = ['全部', '人氣', '爆汁', '辣味', '素食'];
 
   const PRODUCTS = [
-    { id: 'p1', cat: 'signature', name: '招牌豬肉鍋貼', unit: '10 入', price: 85, tags: ['人氣', '爆汁'], spice: 0, img: IMG.gyoza1, desc: '溫體豬後腿肉搭配高麗菜，咬開湯汁滿溢，底部金黃薄脆。' },
-    { id: 'p2', cat: 'signature', name: '高麗菜鮮肉鍋貼', unit: '10 入', price: 80, tags: [], spice: 0, img: IMG.gyoza2, desc: '高麗菜清甜解膩，口感清爽，大人小孩都愛。' },
+    { id: 'p1', cat: 'signature', name: '招牌豬肉鍋貼', unit: '10 入', price: 85, tags: ['人氣', '爆汁'], spice: 0, img: IMG.pxPork, desc: '溫體豬後腿肉搭配高麗菜，咬開湯汁滿溢，底部金黃薄脆。' },
+    { id: 'p2', cat: 'signature', name: '高麗菜鮮肉鍋貼', unit: '10 入', price: 80, tags: [], spice: 0, img: IMG.pxCabbage, desc: '高麗菜清甜解膩，口感清爽，大人小孩都愛。' },
     { id: 'p3', cat: 'signature', name: '韭菜豬肉鍋貼', unit: '10 入', price: 85, tags: ['人氣'], spice: 0, img: IMG.gyoza3, desc: '現切在地韭菜，香氣濃郁，經典台式口味。' },
-    { id: 'p4', cat: 'signature', name: '川味麻辣鍋貼', unit: '10 入', price: 95, tags: ['辣味'], spice: 2, img: IMG.spicy, desc: '花椒與辣油調味的內餡，麻香帶勁，愛吃辣必點。' },
-    { id: 'p5', cat: 'signature', name: '起司玉米鍋貼', unit: '10 入', price: 95, tags: ['爆汁'], spice: 0, img: IMG.gyoza5, desc: '濃郁起司搭配甜玉米，拉絲爆漿，小朋友最愛。' },
-    { id: 'p6', cat: 'signature', name: '鮮蝦鍋貼', unit: '10 入', price: 120, tags: ['爆汁'], spice: 0, img: IMG.gyoza1, desc: '手剁蝦仁彈牙鮮甜，搭配豬肉的油香，層次豐富。' },
+    { id: 'p4', cat: 'signature', name: '川味麻辣鍋貼', unit: '10 入', price: 95, tags: ['辣味'], spice: 2, img: IMG.pxSpicy, desc: '花椒與辣油調味的內餡，麻香帶勁，愛吃辣必點。' },
+    { id: 'p5', cat: 'signature', name: '起司玉米鍋貼', unit: '10 入', price: 95, tags: ['爆汁'], spice: 0, img: IMG.pxCheeseCorn, desc: '濃郁起司搭配甜玉米，拉絲爆漿，小朋友最愛。' },
+    { id: 'p6', cat: 'signature', name: '鮮蝦鍋貼', unit: '10 入', price: 120, tags: ['爆汁'], spice: 0, img: IMG.pxShrimp, desc: '手剁蝦仁彈牙鮮甜，搭配豬肉的油香，層次豐富。' },
 
     { id: 'p7', cat: 'dumpling', name: '招牌鮮肉水餃', unit: '12 入', price: 90, tags: ['人氣'], spice: 0, img: IMG.gyoza3, desc: '薄皮大餡，水煮後依然 Q 彈，肉汁鮮甜。' },
     { id: 'p8', cat: 'dumpling', name: '韭黃鮮蝦水餃', unit: '12 入', price: 130, tags: ['爆汁'], spice: 0, img: IMG.gyoza2, desc: '韭黃香氣襯托蝦仁鮮味，清爽不油膩。' },
     { id: 'p9', cat: 'dumpling', name: '白菜豬肉水餃', unit: '12 入', price: 85, tags: [], spice: 0, img: IMG.gyoza5, desc: '大白菜甜味釋出，餡料多汁，家常好味道。' },
     { id: 'p10', cat: 'dumpling', name: '香菇素食水餃', unit: '12 入', price: 85, tags: ['素食'], spice: 0, img: IMG.gyoza3, desc: '乾香菇、豆干與高麗菜，蛋奶素可食。' },
 
-    { id: 'p11', cat: 'drink', name: '酸辣湯', unit: '1 碗', price: 45, tags: ['辣味', '人氣'], spice: 1, img: IMG.soup, desc: '酸中帶辣、料多味濃，與鍋貼是黃金組合。' },
-    { id: 'p12', cat: 'drink', name: '玉米濃湯', unit: '1 碗', price: 40, tags: [], spice: 0, img: IMG.soup, desc: '香甜玉米熬煮，口感綿密，暖胃又滿足。' },
+    { id: 'p11', cat: 'drink', name: '酸辣湯', unit: '1 碗', price: 45, tags: ['辣味', '人氣'], spice: 1, img: IMG.pxHotSour, desc: '酸中帶辣、料多味濃，與鍋貼是黃金組合。' },
+    { id: 'p12', cat: 'drink', name: '玉米濃湯', unit: '1 碗', price: 40, tags: [], spice: 0, img: IMG.pxCornSoup, desc: '香甜玉米熬煮，口感綿密，暖胃又滿足。' },
     { id: 'p13', cat: 'drink', name: '蛋花湯', unit: '1 碗', price: 35, tags: [], spice: 0, img: IMG.soup, desc: '清爽高湯加上蛋花與紫菜，簡單卻耐喝。' },
     { id: 'p14', cat: 'drink', name: '古早味紅茶', unit: '600ml', price: 30, tags: ['素食'], spice: 0, img: IMG.drink, desc: '大火現煮茶湯，甘醇回甘，解膩首選。' },
     { id: 'p15', cat: 'drink', name: '冬瓜檸檬', unit: '600ml', price: 35, tags: ['素食'], spice: 0, img: IMG.drink, desc: '手熬冬瓜露搭配鮮榨檸檬，酸甜清爽。' },
@@ -806,7 +813,7 @@
   ];
 
   const GIFTS = [
-    { id: 'g1', cat: 'gift', name: '招牌招財鍋貼禮盒', unit: '50 入', price: 990, old: 1180, tags: ['熱銷', '送禮首選'], img: IMG.gift, desc: '50 顆招牌豬肉鍋貼，附特調沾醬 5 入與煎製食譜卡，木紋提盒質感滿分。' },
+    { id: 'g1', cat: 'gift', name: '招牌招財鍋貼禮盒', unit: '50 入', price: 990, old: 1180, tags: ['熱銷', '送禮首選'], img: IMG.pxGift, desc: '50 顆招牌豬肉鍋貼，附特調沾醬 5 入與煎製食譜卡，木紋提盒質感滿分。' },
     { id: 'g2', cat: 'gift', name: '家庭歡聚組', unit: '30 入＋湯 2 包', price: 680, old: 780, tags: ['人氣'], img: IMG.gyoza1, desc: '30 入鍋貼加酸辣湯 2 包，三至四人份的週末聚餐首選。' },
     { id: 'g3', cat: 'gift', name: '節慶雙拼禮盒', unit: '鍋貼 30＋水餃 30', price: 880, old: 990, tags: ['送禮首選'], img: IMG.gyoza3, desc: '鍋貼與水餃雙拼，節慶拜訪、公司送禮都合適。' }
   ];
@@ -867,7 +874,7 @@
     '素食': 'bg-green-700 text-white', '熱銷': 'bg-ember-600 text-white', '送禮首選': 'bg-cream-50 text-wood-800'
   };
   const tagHtml = t => `<span class="rounded-full px-2.5 py-1 text-[11px] font-bold shadow ${TAG_CLS[t] || 'bg-wood-800 text-cream-50'}">${t}</span>`;
-  const imgTag = (id, alt, cls, w) => `<img src="${US(id, w || 900)}" alt="${alt}" loading="lazy" decoding="async" class="${cls}" onerror="this.onerror=null;this.src=FALLBACK">`;
+  const imgTag = (id, alt, cls, w) => `<img src="${US(id, w || 900)}" alt="${alt}" loading="lazy" decoding="async" class="${cls}${id.includes('images/pixel/') ? ' pixel-art' : ''}" onerror="this.onerror=null;this.src=FALLBACK">`;
   const spiceHtml = n => n ? `<p class="mt-3 flex items-center gap-2 text-xs text-wood-700/80">辣度 <span class="tracking-widest text-red-700" role="img" aria-label="${n} / 3">${'●'.repeat(n)}<span class="text-wood-900/20">${'●'.repeat(3 - n)}</span></span></p>` : '';
 
   /* ==========================================================
